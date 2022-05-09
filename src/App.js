@@ -15,8 +15,18 @@ function App() {
       showAlert(true, 'danger', 'Please enter a name');
       return;
     }else if(name && isEditing) {
-      //deal with edit
-      console.log('edit');
+        //deal with edit
+      setList(list.map(item => {
+          if (item.id === editId) {
+            item.title = name;
+          }
+          return item;
+        }
+      ));
+      setIsEditing(false);
+      setEditId('');
+      setName('');
+      showAlert(true, 'success', 'Item updated');
 
     }else{
       //show alert
@@ -32,17 +42,34 @@ function App() {
     setAlert({ show, msg, type });
   }
 
-  const callDelete = (id) => {
-
+  const removeItem = (id) => {
     setList(list.filter((item) => item.id !== id));
+    showAlert(true, 'danger', 'Successfully deleted');
     // setAlert({ show: true, msg: 'Item deleted', type: 'success' });
+  }
 
+  const clearList = () => {
+    setList([]);
+    showAlert(true, 'danger', 'List cleared');
+  }
+
+  const editItem = (id) => {
+    const findItem = list.find((item) => item.id === id);
+    if (findItem) {
+      setIsEditing(true);
+      setEditId(findItem.id);
+      setName(findItem.title);
+
+      // showAlert(true, 'success', 'Successfully edited');
+    } else {
+      showAlert(true, 'danger', 'Item not found');
+    }
   }
 
   return (
     <section className='section-center'>
       <form className='grocery-form' onSubmit={handleSubmit}>
-        {alert.show && <Alert {...alert} removeAlert={showAlert} />}
+        {alert.show && <Alert {...alert} removeAlert={showAlert} list={list} />}
 
         <h3>Grocery Bud</h3>
         <div className='form-control'>
@@ -62,8 +89,8 @@ function App() {
         list.length > 0 &&
         (
           <div className='grocery-container'>
-            <List items={list} callDelete={callDelete} />
-            <button className='clear-btn'>Clear Items</button>
+            <List items={list} removeItem={removeItem} editItem={editItem} />
+            <button className='clear-btn' onClick={clearList}>Clear Items</button>
           </div>
         )
       }
