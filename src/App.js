@@ -92,7 +92,7 @@ function App() {
           <input
             type="text"
             className='grocery'
-            placeholder='eg. eggs'
+            placeholder='eg. Bananas'
             value={name} onChange={(e) => setName(e.target.value)}
           />
           <button type='submit' className='submit-btn'>
